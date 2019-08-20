@@ -9,13 +9,14 @@ Set the start and end year for the script and execute with node, the file will o
 
 /**
  * The createInsertStatement method is used to create the entire insert statement
- * @param  {Number} fromYear This is a year formatted as eg 2019. It is the first year in the data that is produced by this method
- * @param  {Number} toYear   This is a year formatted as eg 2019. It is the final year in the data that is produced by this method
- * @return {Boolean}         The boolean returned can be used to determine if the execution had errors
+ * @param  {String} tableName This is the table name that will appear in the output sql and is the name of the file outputted
+ * @param  {Number} fromYear  This is a year formatted as eg 2019. It is the first year in the data that is produced by this method
+ * @param  {Number} toYear    This is a year formatted as eg 2019. It is the final year in the data that is produced by this method
+ * @return {Boolean}          The boolean returned can be used to determine if the execution had errors
  */
 exports.createInsertStatement = function({ tableName: tableName = 'Calendar', fromYear: fromYear, toYear: toYear }) {
   // Clear the sql file before inserting new data
-  fs.writeFileSync("./Calendar.sql", '', (err) => console.log(err ? err : "Calendar sql file was cleared"));
+  fs.writeFileSync(`${tableName}.sql`, '', (err) => console.log(err ? err : `${tableName} sql file was cleared`));
   // Set the variable to store the output, this variable starts with the insert statement
   let output = `INSERT INTO ${tableName} (Date, dayOfWeekIndex, MonthOfYearIndex, Year, dayOfMonthIndex, isWeekend, isWeekDay, isPublicHoliday) VALUES \n`;
   // Loop through all dates and create insert statements
@@ -34,7 +35,7 @@ exports.createInsertStatement = function({ tableName: tableName = 'Calendar', fr
     }
   }
   // Finally write the sql data to file and exit
-  fs.writeFileSync("./Calendar.sql", output, (err) => console.log(err ? err : "Calendar sql file was saved"));
+  fs.writeFileSync(`${tableName}.sql`, output, (err) => console.log(err ? err : `${tableName} sql file was saved`));
 }
 
 /**
@@ -59,7 +60,7 @@ let createInsertValue = function({ year, monthOfYear, dayOfMonth, dayOfWeek }) {
 /**
  * Check if the date is a recurring public holiday. These public holidays ALWAYS fall on the same date, every year without change, ever.
  * Note that a year is not provided becuase these public holidays are ALWAYS the same irrespective of the year. This method does not
- * capture every public holiday in Australia because public holiday dates are volitile. 
+ * capture every public holiday in Australia because public holiday dates are volitile.
  * @param  {Number} monthOfYear The month of the year, January = 1
  * @param  {Number} dayOfMonth  The day of the month, the first day = 1
  * @return {Boolean}            Returns a boolean that represents if the specified day is a public holiday.
